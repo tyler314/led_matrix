@@ -1,4 +1,6 @@
-class Microcontroller:
+from Singleton import Singleton
+
+class Microcontroller(metaclass = Singleton):
     def __init__(self):
         self.R1 = None
         self.R2 = None
