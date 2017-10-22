@@ -1,4 +1,4 @@
-from Singleton import Singleton
+from singleton import Singleton
 import pyb.Pin.board as pins
 import pyb
 
