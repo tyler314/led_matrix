@@ -1,8 +1,8 @@
 from singleton import Singleton
 import pyb.Pin.board as pins
-import pyb
 
-class Microcontroller(metaclass = Singleton):
+
+class Microcontroller(metaclass=Singleton):
 
     def __init__(self):
         self.R1 = None
@@ -34,7 +34,7 @@ class Pyboard(Microcontroller):
         self.G1 = G1
         self.G2 = G2
 
-    def set_row_select_pins(self, A=pins.Y7, B=pins.Y8, C=pins.X9, D=pins.X10)
+    def set_row_select_pins(self, A=pins.Y7, B=pins.Y8, C=pins.X9, D=pins.X10):
         self.A = A
         self.B = B
         self.C = C
