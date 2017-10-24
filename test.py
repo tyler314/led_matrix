@@ -1,3 +1,15 @@
+def T(x):
+    if not hasattr(x, '__iter__'):
+        # Not a list
+        return x
+    elif len(x) and not hasattr(x[0], '__iter__'):
+        # List of items
+        return list(map(list, zip(x)))
+    else:
+        # List of lists
+        return list(map(list, zip(*x)))
+        
+
 class test(list):
 
     def __setitem__(self, index, value):
@@ -14,9 +26,10 @@ class test(list):
 
     def getitem(self, matrix, index):
         if len(index) == 1:
-            return matrix.__getitem__(index[0])
+            out = matrix.__getitem__(index[0])
+            return out[0] if len(out) == 1 else out
         else:
-            return self.getitem(matrix.__getitem__(index[0]), index[1:])
+            return self.getitem(T(matrix.__getitem__(index[0])), index[1:])
             
     def setitem(self, matrix, index, value):
     	if len(index) == 1:
