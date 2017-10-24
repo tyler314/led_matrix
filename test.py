@@ -10,7 +10,7 @@ def T(x):
         return list(map(list, zip(*x)))
         
 
-class test(list):
+class TestList(list):
 
     def __setitem__(self, index, value):
         if type(index) is tuple:
