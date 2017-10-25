@@ -17,10 +17,7 @@ class LEDMatrix(list):
         super().__init__([[0 for _ in range(32)] for _ in range(rows)])
 
     def __setitem__(self, index, value):
-        if type(index) is tuple:
-            return self.setitem(self, index, value)
-        else:
-            return super().__setitem__(index, value)
+        return self.setitem(self, index, value)
     
     def __getitem__(self, index):
         if type(index) is tuple:
@@ -36,7 +33,19 @@ class LEDMatrix(list):
             return self.getitem(T(matrix.__getitem__(index[0])), index[1:])
             
     def setitem(self, matrix, index, value):
-    	if len(index) == 1:
-    		return matrix.__setitem__(index[0], value)
-    	else:
-    		return self.setitem(matrix.__getitem__(index[0]), index[1:], value)
+        if type(index) is int or len(index) == 1:
+            # recursively evaluate the indices
+            index = index[0] if type(index) is not int else index
+            matrix_element = matrix.__getitem__(index)
+            if hasattr(matrix_element, '__iter__'):
+                # recursively evaluate all nested lists within matrix
+    	        for i, element in enumerate(matrix_element):
+                    if hasattr(element, '__iter__'):
+                        for j, _ in enumerate(element):
+                            self.setitem(element, j, value)
+                    else:
+                        matrix_element.__setitem__(i, value)
+            else:
+                return matrix.__setitem__(index, value)
+        else:
+            return self.setitem(matrix.__getitem__(index[0]), index[1:], value)
