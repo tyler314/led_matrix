@@ -29,19 +29,29 @@ class TestList(list):
             return self.getitem(T(matrix.__getitem__(index[0])), index[1:])
             
     def setitem(self, matrix, index, value):
-        if type(index) is int or len(index) == 1:
+        if type(index) in [int, slice] or len(index) == 1:
             # recursively evaluate the indices
-            index = index[0] if type(index) is not int else index
-            matrix_element = matrix.__getitem__(index)
-            if hasattr(matrix_element, '__iter__'):
-                # recursively evaluate all nested lists within matrix
-    	        for i, element in enumerate(matrix_element):
-                    if hasattr(element, '__iter__'):
-                        for j, _ in enumerate(element):
-                            self.setitem(element, j, value)
-                    else:
-                        matrix_element.__setitem__(i, value)
-            else:
-                return matrix.__setitem__(index, value)
+            index = index[0] if type(index) not in [int, slice] else index
+            if type(index) is int:
+                self._scan_matrix(matrix, index, value, matrix.__getitem__(index))
+            elif type(index) is slice:
+                start = index.start if index.start is not None else 0
+                stop = index.stop if index.stop is not None else len(matrix)
+                step = index.step if index.step is not None else 1
+                for i in range(start, stop, step):
+                    self._scan_matrix(matrix, i, value)
         else:
             return self.setitem(matrix.__getitem__(index[0]), index[1:], value)
+
+    def _scan_matrix(self, matrix, index, value):
+        matrix_element = matrix.__getitem__(index)
+        if hasattr(matrix_element, '__iter__'):
+            # recursively evaluate all nested lists within matrix
+    	    for i, element in enumerate(matrix_element):
+                if hasattr(element, '__iter__'):
+                    for j, _ in enumerate(element):
+                        self.setitem(element, j, value)
+                else:
+                    matrix_element.__setitem__(i, value)
+        else:
+            return matrix.__setitem__(index, value)
