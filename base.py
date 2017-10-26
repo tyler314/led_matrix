@@ -1,16 +1,28 @@
-def T(x):
+# --- functions ----------------------------------------------------------------------------------
+
+
+def transform(x):
     if not hasattr(x, '__iter__'):
-        # Not a list
+        # not a list
         return x
     elif len(x) and not hasattr(x[0], '__iter__'):
-        # List of items
+        # list of items
         return list(map(list, zip(x)))
     else:
-        # List of lists
+        # list of lists
         return list(map(list, zip(*x)))
-        
 
-class TestList(list):
+
+# --- classes ------------------------------------------------------------------------------------
+
+
+class NDList(list):
+
+    def __init__(self, shape, fill=0.):
+        lis = fill
+        for s in shape[::-1]:
+            lis = [lis] * s
+        list.__init__(self, lis)
 
     def __setitem__(self, index, value):
         return self.setitem(self, index, value)
@@ -21,12 +33,28 @@ class TestList(list):
         else:
             return super().__getitem__(index)
 
+    @property
+    def shape(self):
+        shape = []
+        item = self
+        while hasattr(item, '__len__'):
+            shape.append(len(item))
+            item = item[0]
+        return tuple(shape)
+
+    @property
+    def size(self):
+        out = 1
+        for s in self.shape:
+            out *= s
+        return out
+
     def getitem(self, matrix, index):
         if len(index) == 1:
             out = matrix.__getitem__(index[0])
             return out[0] if len(out) == 1 else out
         else:
-            return self.getitem(T(matrix.__getitem__(index[0])), index[1:])
+            return self.getitem(transform(matrix.__getitem__(index[0])), index[1:])
             
     def setitem(self, matrix, index, value):
         if type(index) in [int, slice] or len(index) == 1:
