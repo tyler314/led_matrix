@@ -61,13 +61,13 @@ class NDList(list):
             # recursively evaluate the indices
             index = index[0] if type(index) not in [int, slice] else index
             if type(index) is int:
-                self._scan_matrix(matrix, index, value, matrix.__getitem__(index))
+                self._scan_matrix(matrix.__getitem__(index), index, value)
             elif type(index) is slice:
                 start = index.start if index.start is not None else 0
                 stop = index.stop if index.stop is not None else len(matrix)
                 step = index.step if index.step is not None else 1
                 for i in range(start, stop, step):
-                    self._scan_matrix(matrix, i, value)
+                    self._scan_matrix(matrix.__getitem__(i), i, value)
         else:
             return self.setitem(matrix.__getitem__(index[0]), index[1:], value)
 
