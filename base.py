@@ -1,6 +1,16 @@
 # --- functions ----------------------------------------------------------------------------------
 
 
+def iteriters(*args):
+    # very similar to itertools.product in cpython
+    pools = map(tuple, args)
+    result = [[]]
+    for pool in pools:
+        result = [x+[y] for x in result for y in pool]
+    for prod in result:
+        yield tuple(prod)
+
+
 def transform(x):
     if not hasattr(x, '__iter__'):
         # not a list
@@ -24,20 +34,41 @@ class NDList(list):
             lis = [lis] * s
         list.__init__(self, lis)
 
-    def __setitem__(self, index, value):
-        return self.setitem(self, index, value)
-    
     def __getitem__(self, index):
         if type(index) is tuple:
-            return self.getitem(self, index)
+            return self._getitem(self, index)
         else:
             return super().__getitem__(index)
+
+    def __setitem__(self, index, value):
+        # coerce index to list
+        if not hasattr(index, '__iter__'):
+            index = [index]
+        index = list(index)
+        # fill out implicit arguments
+        while len(index) <= len(self.shape):
+            index.append(slice(None))
+        for i, v in enumerate(index):
+            if isinstance(v, int):
+                v = slice(v, v+1)
+                index[i] = v
+        # assign to value
+        indices = [s.indices(n) for s, n in zip(index, self.shape)]
+        for idx in iteriters(*[range(start, stop, step) for start, stop, step in indices]):
+            self[idx[:-1]][idx[-1]] = value
+
+    def _getitem(self, matrix, index):
+        if len(index) == 1:
+            out = matrix.__getitem__(index[0])
+            return out[0] if len(out) == 1 else out
+        else:
+            return self._getitem(transform(matrix.__getitem__(index[0])), index[1:])
 
     @property
     def shape(self):
         shape = []
         item = self
-        while hasattr(item, '__len__'):
+        while isinstance(item, list):
             shape.append(len(item))
             item = item[0]
         return tuple(shape)
@@ -49,37 +80,3 @@ class NDList(list):
             out *= s
         return out
 
-    def getitem(self, matrix, index):
-        if len(index) == 1:
-            out = matrix.__getitem__(index[0])
-            return out[0] if len(out) == 1 else out
-        else:
-            return self.getitem(transform(matrix.__getitem__(index[0])), index[1:])
-            
-    def setitem(self, matrix, index, value):
-        if type(index) in [int, slice] or len(index) == 1:
-            # recursively evaluate the indices
-            index = index[0] if type(index) not in [int, slice] else index
-            if type(index) is int:
-                self._scan_matrix(matrix, index, value, matrix.__getitem__(index))
-            elif type(index) is slice:
-                start = index.start if index.start is not None else 0
-                stop = index.stop if index.stop is not None else len(matrix)
-                step = index.step if index.step is not None else 1
-                for i in range(start, stop, step):
-                    self._scan_matrix(matrix, i, value)
-        else:
-            return self.setitem(matrix.__getitem__(index[0]), index[1:], value)
-
-    def _scan_matrix(self, matrix, index, value):
-        matrix_element = matrix.__getitem__(index)
-        if hasattr(matrix_element, '__iter__'):
-            # recursively evaluate all nested lists within matrix
-    	    for i, element in enumerate(matrix_element):
-                if hasattr(element, '__iter__'):
-                    for j, _ in enumerate(element):
-                        self.setitem(element, j, value)
-                else:
-                    matrix_element.__setitem__(i, value)
-        else:
-            return matrix.__setitem__(index, value)
