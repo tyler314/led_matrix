@@ -1,7 +1,7 @@
 # --- functions ----------------------------------------------------------------------------------
 
 
-def transform(x):
+def transpose(x):
     if not hasattr(x, '__iter__'):
         # not a list
         return x
@@ -54,7 +54,7 @@ class NDList(list):
             out = matrix.__getitem__(index[0])
             return out[0] if len(out) == 1 else out
         else:
-            return self.getitem(transform(matrix.__getitem__(index[0])), index[1:])
+            return self.getitem(transpose(matrix.__getitem__(index[0])), index[1:])
             
     def setitem(self, matrix, index, value):
         if type(index) in [int, slice] or len(index) == 1:
