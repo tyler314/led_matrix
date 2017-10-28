@@ -10,8 +10,7 @@ def iteriters(*args):
     for prod in result:
         yield tuple(prod)
 
-
-def transform(x):
+def transpose(x):
     if not hasattr(x, '__iter__'):
         # not a list
         return x
@@ -62,7 +61,7 @@ class NDList(list):
             out = matrix.__getitem__(index[0])
             return out[0] if len(out) == 1 else out
         else:
-            return self._getitem(transform(matrix.__getitem__(index[0])), index[1:])
+            return self._getitem(transpose(matrix.__getitem__(index[0])), index[1:])
 
     @property
     def shape(self):
@@ -79,4 +78,4 @@ class NDList(list):
         for s in self.shape:
             out *= s
         return out
-
+ 
