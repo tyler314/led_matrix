@@ -74,6 +74,8 @@ class NDList(list):
 
     @property
     def size(self):
+        if not self:
+            return 0
         out = 1
         for s in self.shape:
             out *= s
