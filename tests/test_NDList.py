@@ -28,8 +28,16 @@ class test_NDList(unittest.TestCase):
                 for k in range(10):
                     self.assertEqual(ndl[i, j, k], 1)
 
-    @unittest.expectedFailure
     def test_setitem(self):
         ndl = led_matrix.NDList(shape=(1,))
         ndl[0] = 7
-        self.assertEqual(ndl[1], 7)
+        self.assertEqual(ndl[0], 7)
+        ndl = led_matrix.NDList(shape=(1,1))
+        ndl[0,0] = 7
+        self.assertEqual(ndl[0,0], 7)
+        ndl = led_matrix.NDList(shape=(2,2))
+        ndl[0,0] = 7
+        self.assertEqual(ndl[0,0], 7)
+        ndl = led_matrix.NDList(shape=(4,4,4))
+        ndl[0,0,0] = 7
+        self.assertEqual(ndl[0,0,0], 7)

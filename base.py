@@ -40,19 +40,24 @@ class NDList(list):
             return super().__getitem__(index)
 
     def __setitem__(self, index, value):
+        if self.size == 1 and not hasattr(self.__getitem__(0), '__iter__'):
+            return super().__setitem__(index, value)
         # coerce index to list
         if not hasattr(index, '__iter__'):
-            index = [index]
+            index = [index] # Why cast to list in conditional, 
+                            # when you cast it anyways on the next line?
         index = list(index)
-        # fill out implicit arguments
+        # fill out implicit arguments, create slice objects
         while len(index) <= len(self.shape):
             index.append(slice(None))
         for i, v in enumerate(index):
             if isinstance(v, int):
+                # Turn int indexes into slice objects
                 v = slice(v, v+1)
                 index[i] = v
         # assign to value
         indices = [s.indices(n) for s, n in zip(index, self.shape)]
+        print(indices)
         for idx in iteriters(*[range(start, stop, step) for start, stop, step in indices]):
             self[idx[:-1]][idx[-1]] = value
 
