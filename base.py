@@ -69,7 +69,7 @@ class NDList(list):
         item = self
         while isinstance(item, list):
             shape.append(len(item))
-            item = item[0]
+            item = item[0] if len(item) > 0 else None
         return tuple(shape)
 
     @property
