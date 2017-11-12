@@ -1,3 +1,12 @@
+"""Parent class."""
+
+
+# --- import -------------------------------------------------------------------------------------
+
+
+import copy
+
+
 # --- functions ----------------------------------------------------------------------------------
 
 
@@ -9,6 +18,7 @@ def iteriters(*args):
         result = [x+[y] for x in result for y in pool]
     for prod in result:
         yield tuple(prod)
+
 
 def transpose(x):
     if not hasattr(x, '__iter__'):
@@ -30,7 +40,10 @@ class NDList(list):
     def __init__(self, shape, fill=0.):
         lis = fill
         for s in shape[::-1]:
-            lis = [lis] * s
+            new = []
+            for _ in range(s):
+                new.append(copy.copy(lis))
+            lis = new
         list.__init__(self, lis)
 
     def __getitem__(self, index):
@@ -78,4 +91,3 @@ class NDList(list):
         for s in self.shape:
             out *= s
         return out
- 
