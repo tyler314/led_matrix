@@ -19,6 +19,7 @@ def iteriters(*args):
     for prod in result:
         yield tuple(prod)
 
+
 def transpose(x):
     if not hasattr(x, '__iter__'):
         # not a list
@@ -90,4 +91,3 @@ class NDList(list):
         for s in self.shape:
             out *= s
         return out
- 
