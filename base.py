@@ -44,15 +44,22 @@ class NDList(list):
             for _ in range(s):
                 new.append(copy.copy(lis))
             lis = new
+        self._shape = shape
         list.__init__(self, lis)
 
     def __getitem__(self, index):
-        if type(index) is tuple:
-            return self._getitem(self, index)
-        else:
+        if not hasattr(index, '__iter__'):
             return super().__getitem__(index)
+        else:
+            out = self
+            for i in index:
+                out = out[i]
+            return out
 
     def __setitem__(self, index, value):
+        # case of single integer
+        if isinstance(index, int):
+            return super().__setitem__(index, value)
         # coerce index to list
         if not hasattr(index, '__iter__'):
             index = [index]
@@ -64,20 +71,15 @@ class NDList(list):
             if isinstance(v, int):
                 v = slice(v, v+1)
                 index[i] = v
-        # assign to value
+        # for each
         indices = [s.indices(n) for s, n in zip(index, self.shape)]
-        for idx in iteriters(*[range(start, stop, step) for start, stop, step in indices]):
+        ranges = [range(start, stop, step) for start, stop, step in indices]
+        for idx in iteriters(*ranges):
             self[idx[:-1]][idx[-1]] = value
-
-    def _getitem(self, matrix, index):
-        if len(index) == 1:
-            out = matrix.__getitem__(index[0])
-            return out[0] if len(out) == 1 else out
-        else:
-            return self._getitem(transpose(matrix.__getitem__(index[0])), index[1:])
 
     @property
     def shape(self):
+        return self._shape
         shape = []
         item = self
         while isinstance(item, list):
