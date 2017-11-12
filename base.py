@@ -1,3 +1,12 @@
+"""Parent class."""
+
+
+# --- import -------------------------------------------------------------------------------------
+
+
+import copy
+
+
 # --- functions ----------------------------------------------------------------------------------
 
 
@@ -30,7 +39,10 @@ class NDList(list):
     def __init__(self, shape, fill=0.):
         lis = fill
         for s in shape[::-1]:
-            lis = [lis] * s
+            new = []
+            for _ in range(s):
+                new.append(copy.copy(lis))
+            lis = new
         list.__init__(self, lis)
 
     def __getitem__(self, index):
