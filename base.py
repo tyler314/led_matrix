@@ -44,7 +44,7 @@ class NDList(list):
             for _ in range(s):
                 new.append(copy.copy(lis))
             lis = new
-        self._shape = shape
+        self.shape = tuple(shape)
         list.__init__(self, lis)
 
     def __getitem__(self, index):
@@ -76,16 +76,6 @@ class NDList(list):
         ranges = [range(start, stop, step) for start, stop, step in indices]
         for idx in iteriters(*ranges):
             self[idx[:-1]][idx[-1]] = value
-
-    @property
-    def shape(self):
-        return self._shape
-        shape = []
-        item = self
-        while isinstance(item, list):
-            shape.append(len(item))
-            item = item[0] if len(item) > 0 else None
-        return tuple(shape)
 
     @property
     def size(self):
