@@ -1,2 +1,5 @@
 *.egg*
 *__pycache__*
+*.swp
+.cache/
+.idea/
