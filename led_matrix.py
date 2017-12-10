@@ -1,5 +1,7 @@
-from base import NDList, iteriters
+class LEDMatrix(object):
+    
+    def __init__(self, microcontroller):
+        self.mc = microcontroller
 
-
-class LEDMatrix(NDList):
-    pass
+    def set_pixel(i, j, color):
+        raise NotImplementedError
