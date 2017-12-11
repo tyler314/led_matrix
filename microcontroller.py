@@ -11,7 +11,7 @@ class Microcontroller:
             cls._instance = super().__new__(cls)
         return cls._instance
 
-    def __init__(self):
+    def __init__(self, smallBoard=False):
         self.R1 = None
         self.R2 = None
         self.B2 = None
@@ -23,14 +23,19 @@ class Microcontroller:
         self.D = None
         self.OE = None
         self.LAT = None
+        self.smallBoard = smallBoard
         self.set_RGB_pins()
         self.set_row_select_pins()
+        self.set_control_pins()
 
     def set_RGB_pins(self, R1, R2, B1, B2, G1, G2):
         raise NotImplementedError('Need to implement set_RGB_data method.')
 
     def set_row_select_pins(self, A, B, C, D):
         raise NotImplementedError('Need to implement set_row_select method.')
+
+    def set_control_pins(self, LAT, OE):
+        raise NotImplementedError('Need to implement set_control_pins method.')
 
     def latch(self):
         self.LAT.value(0)
