@@ -22,15 +22,12 @@ class LEDMatrix(object):
         else:
             self.mc.D.value(0)
 
-    @property
     def _turn_on(self):
         self.mc.OE.value(0)
 
-    @property
     def _turn_off(self):
         self.mc.OE.value(1)
 
-    @property
     def _toggle_on_off(self):
         value = 0 if self.mc.OE.value() else 1
         self.mc.OE.value(value)
