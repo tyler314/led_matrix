@@ -2,6 +2,7 @@ class LEDMatrix(object):
     
     def __init__(self, microcontroller):
         self.mc = microcontroller
+        self._turn_on()
 
     def _select_row(self, row):
         row = row % 8 if self.mc.smallBoard else row % 16
