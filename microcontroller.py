@@ -23,6 +23,7 @@ class Microcontroller:
         self.D = None
         self.OE = None
         self.LAT = None
+        self.CLK = None
         self.smallBoard = smallBoard
         self.set_RGB_pins()
         self.set_row_select_pins()
@@ -66,7 +67,8 @@ class Pyboard(Microcontroller):
         self.C = pyb.Pin(C, pyb.Pin.OUT)
         self.D = pyb.Pin(D, pyb.Pin.OUT)
 
-    def set_control_pins(self, LAT=pins.X11, OE=pins.X12):
+    def set_control_pins(self, LAT=pins.X11, OE=pins.X12, CLK=pins.X1):
         self.LAT = pyb.Pin(LAT, pyb.Pin.OUT)
         self.LAT.value(1)
         self.OE = pyb.Pin(OE, pyb.Pin.OUT)
+        self.CLK = pyb.Pin(CLK, pyb.Pin.OUT)
