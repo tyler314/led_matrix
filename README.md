@@ -9,8 +9,9 @@ First Download the source code
     $ git clone https://github.com/micropython/micropython.git
     $ git submodule update --init
 
-Then, add additional C modules and other code to the source code. To compile the code, you
-will need the ARM compiler, arm-none-eabi-gcc, found here:
+OPTIONAL: At this point you have the opportunity to add additional custom C modules and other code to the source code.
+
+To compile the code, you will need the ARM compiler, arm-none-eabi-gcc, found here:
 https://developer.arm.com/open-source/gnu-toolchain/gnu-rm/downloads
 
 To build for the STM32 family of boards (this includes Pyboard), run the following
