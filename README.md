@@ -7,6 +7,7 @@ Instructions on how to compile source code for STM32 boards
 First Download the source code
 
     $ git clone https://github.com/micropython/micropython.git
+    $ cd micropython
     $ git submodule update --init
 
 OPTIONAL: At this point you have the opportunity to add additional custom C modules and other code to the source code.
