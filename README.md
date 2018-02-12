@@ -6,7 +6,8 @@ Instructions on how to compile source code for STM32 boards
 
 First Download the source code
 
-    $ git clone git clone https://github.com/micropython/micropython.git
+    $ git clone https://github.com/micropython/micropython.git
+    $ git submodule update --init
 
 Then, add additional C modules and other code to the source code. To compile the code, you
 will need the ARM compiler, arm-none-eabi-gcc, found here:
@@ -15,7 +16,6 @@ https://developer.arm.com/open-source/gnu-toolchain/gnu-rm/downloads
 To build for the STM32 family of boards (this includes Pyboard), run the following
 commands within the source level folder (e.g. micropython/):
 
-    $ git submodule update --init
     $ make -C mpy-cross
     $ cd ports/stm32
     $ make BOARD=<name of board> CROSS_COMPILE=<Path where you uncompressed the toolchain>/bin/arm-none-eabi-
