@@ -26,4 +26,4 @@ set to PYBV10 by default (Pyboard V10).
 All options for BOARD can be found in folder, [micropython/ports/stm32/boards/](https://github.com/micropython/micropython/tree/master/ports/stm32/boards)
 
 The dfu file used for flashing the board will be located at
-micropython/ports/stm32/build-<BOARD>/firmware.dfu
+micropython/ports/stm32/build-\<BOARD\>/firmware.dfu
