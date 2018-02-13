@@ -80,3 +80,29 @@ mpconfigport.h file to MICROPY\_PORT\_BUILTIN\_MODULES:
         { MP_ROM_QSTR(MP_QSTR_umachine), MP_ROM_PTR(&machine_module) }, \
         ...
         { MP_ROM_QSTR(MP_QSTR_mymodule), MP_ROM_PTR(&mp_module_mymodule) }, \
+
+Adding a Function
+-----------------
+To add a simple function, add the following code immediately after the includes,
+
+    #include <stdio.h>
+    
+    STATIC mp_obj_t mymodule_printy(void) {
+        printf("Hello world!\n");
+        return mp_const_none;
+    }
+    STATIC MP_DEFINE_CONST_FUN_OBJ_0(derp_printy_obj, derp_printy);
+    
+This creates a function object `derp_printy_obj` which takes no arguments, and when it is
+called, executes the C function `derp_printy`. Our function must return something, and in
+this case it returns `None`. To add the function to our module, add this second line of
+code within the `derp_globals_table` you already defined:
+
+    STATIC const mp_map_elem_t derp_globals_table[] = {
+        { MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_derp) },
+        { MP_ROM_QSTR(MP_QSTR_printy), (mp_obj_t)&derp_printy_obj },
+    };
+
+Micropython uses the QSTR macros to define constant strings. You must add `Q(printy)` to
+the end of the file `ports/stm32/qstrdefsport.h`, this will define the string `printy` for
+Micropython.
