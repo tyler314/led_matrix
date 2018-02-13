@@ -29,6 +29,9 @@ All options for BOARD can be found in folder, [micropython/ports/stm32/boards/](
 The dfu file used for flashing the board will be located at
 micropython/ports/stm32/build-\<BOARD\>/firmware.dfu
 
+Instructions on how to flash the pyboard using the `firmware.dfu` file can be found here:
+https://github.com/micropython/micropython/wiki/Pyboard-Firmware-Update
+
 Instructions on how to inject your own C code within the Micropython source code
 --------------------------------------------------------------------------------
 
