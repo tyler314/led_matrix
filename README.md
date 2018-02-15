@@ -90,7 +90,7 @@ To add a simple function, add the following code immediately after the includes,
 
     #include <stdio.h>
     
-    STATIC mp_obj_t mymodule_printy(void) {
+    STATIC mp_obj_t derp_printy(void) {
         printf("Hello world!\n");
         return mp_const_none;
     }
