@@ -112,8 +112,11 @@ Micropython.
 
 Adding a Class
 --------------
-To create a Python class in C, we must do so using a C-struct. To follow along, add all of
-the following code in order, beginning immediately after the last `#include` in your c file.
+To create a Python class in C, we must do so using a C-struct.
+In this example, we will create a class called `myLEDs` of the micropython module `derp`.
+the class constructor takes in one integer, and sets it to the class's onlu field, `led_number `.
+To follow along, add the following code in order, beginning immediately after the last
+`#include` in your c file.
 
     // Define variable and function prototypes
     const mp_obj_type_t derp_myLEDs_type;
@@ -124,9 +127,8 @@ the following code in order, beginning immediately after the last `#include` in 
     STATIC const mp_rom_map_elem_t derp_myLEDs_locals_dict_table[] = { };
     STATIC MP_DEFINE_CONST_DICT(derp_myLEDs_locals_dict, derp_myLEDs_locals_dict_table);
 
-As stated in the comment, this creates the table of global members of your class. Next, we
-must create the C-structure of our new object; it will contain some basic information of
-the class, as well as fields of the class. Add the following code next.
+We must create the C-structure of our new object; it will contain some basic information
+about the class, as well as fields of the class. Add the following code next.
 
     // this is the actual C-structure for the object "myLEDs"
     typedef struct _derp_myLEDs_obj_t {
@@ -136,9 +138,8 @@ the class, as well as fields of the class. Add the following code next.
         uint8_t led_number;
     } derp_myLEDs_obj_t;
 
-We know must create the class-object type, containing more information about the class.
-Our class needs methods, we will add a print method (similar to `__repr__`), and a
-constructor, called print and make_new, respectively.
+We now create the class-object type. Our class needs methods, we will add a print method
+(similar to `__repr__` in Python), and a constructor, called print and make_new, respectively.
 
     // create the class-object type
     const mp_obj_type_t derp_myLEDs_type = {
@@ -154,7 +155,7 @@ constructor, called print and make_new, respectively.
         .locals_dict = (mp_obj_dict_t*)&derp_myLEDs_locals_dict,
     };
     
-We can now define the methods of the class,
+We are now able to define the methods of the class,
 
     // Define the constructor, and print function,
     // of the object myLEDs, respectively
