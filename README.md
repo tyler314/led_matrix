@@ -109,3 +109,77 @@ code within the `derp_globals_table` you already defined:
 Micropython uses the QSTR macros to define constant strings. You must add `Q(printy)` to
 the end of the file `ports/stm32/qstrdefsport.h`, this will define the string `printy` for
 Micropython.
+
+Adding a Class
+--------------
+To create a Python class in C, we must do so using a C-struct. To follow along, add all of
+the following code in order, beginning immediately after the last `#include` in your c file.
+
+    // Define variable and function prototypes
+    const mp_obj_type_t derp_myLEDs_type;
+    mp_obj_t derp_myLEDs_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *args);
+    STATIC void derp_myLEDs_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kind);
+
+    // create the table of global members for the class
+    STATIC const mp_rom_map_elem_t derp_myLEDs_locals_dict_table[] = { };
+    STATIC MP_DEFINE_CONST_DICT(derp_myLEDs_locals_dict, derp_myLEDs_locals_dict_table);
+
+As stated in the comment, this creates the table of global members of your class. Next, we
+must create the C-structure of our new object; it will contain some basic information of
+the class, as well as fields of the class. Add the following code next.
+
+    // this is the actual C-structure for the object "myLEDs"
+    typedef struct _derp_myLEDs_obj_t {
+        // base represents some basic information, like type
+        mp_obj_base_t base;
+        // a new member created
+        uint8_t led_number;
+    } derp_myLEDs_obj_t;
+
+We know must create the class-object type, containing more information about the class.
+Our class needs methods, we will add a print method (similar to `__repr__`), and a
+constructor, called print and make_new, respectively.
+
+    // create the class-object type
+    const mp_obj_type_t derp_myLEDs_type = {
+        // inherit the type "type"
+        { &mp_type_type },
+        // give the type a name
+        .name = MP_QSTR_myLEDsObj,
+        // give the type a print function
+        .print = derp_myLEDs_print,
+        // give the type a constructor
+        .make_new = derp_myLEDs_make_new,
+        // add the global members
+        .locals_dict = (mp_obj_dict_t*)&derp_myLEDs_locals_dict,
+    };
+    
+We can now define the methods of the class,
+
+    // Define the constructor, and print function,
+    // of the object myLEDs, respectively
+    mp_obj_t derp_myLEDs_make_new(const mp_obj_type_t *type,
+                                 size_t n_args,
+                                 size_t n_kw,
+                                 const mp_obj_t *args){
+        // check the numer of arguments (min 1, max 1)
+        // on an error, raise Python exception
+        mp_arg_check_num(n_args, n_kw, 1, 1, true);
+        // create a new object of our C-struct/myLEDs type
+        derp_myLEDs_obj_t *self = m_new_obj(derp_myLEDs_obj_t);
+        // give the new object a type
+        self->base.type = &derp_myLEDs_type;
+        // set the led_number member with the first argument of the constructor
+        self->led_number = mp_obj_get_int(args[0]);
+        // return the object itself
+        return MP_OBJ_FROM_PTR(self);
+    }
+    
+    STATIC void derp_myLEDs_print(const mp_print_t *print,
+                                  mp_obj_t self_in,
+                                  mp_print_kind_t kind) {
+        // create a pointer to the C-struct of the oject
+        derp_myLEDs_obj_t *self = MP_OBJ_TO_PTR(self_in);
+        // print the number
+        printf("LED number: (%u)", self->led_number);
+    }
