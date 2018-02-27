@@ -114,7 +114,7 @@ Adding a Class
 --------------
 To create a Python class in C, we must do so using a C-struct.
 In this example, we will create a class called `myLEDs` of the micropython module `derp`.
-the class constructor takes in one integer, and sets it to the class's onlu field, `led_number `.
+the class constructor takes in one integer, and sets it to the class's only field, `led_number `.
 To follow along, add the following code in order, beginning immediately after the last
 `#include` in your c file.
 
