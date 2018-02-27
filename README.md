@@ -123,10 +123,6 @@ To follow along, add the following code in order, beginning immediately after th
     mp_obj_t derp_myLEDs_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *args);
     STATIC void derp_myLEDs_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kind);
 
-    // create the table of global members for the class
-    STATIC const mp_rom_map_elem_t derp_myLEDs_locals_dict_table[] = { };
-    STATIC MP_DEFINE_CONST_DICT(derp_myLEDs_locals_dict, derp_myLEDs_locals_dict_table);
-
 We must create the C-structure of our new object; it will contain some basic information
 about the class, as well as fields of the class. Add the following code next.
 
@@ -137,23 +133,6 @@ about the class, as well as fields of the class. Add the following code next.
         // a new member created
         uint8_t led_number;
     } derp_myLEDs_obj_t;
-
-We now create the class-object type. Our class needs methods, we will add a print method
-(similar to `__repr__` in Python), and a constructor, called print and make_new, respectively.
-
-    // create the class-object type
-    const mp_obj_type_t derp_myLEDs_type = {
-        // inherit the type "type"
-        { &mp_type_type },
-        // give the type a name
-        .name = MP_QSTR_myLEDsObj,
-        // give the type a print function
-        .print = derp_myLEDs_print,
-        // give the type a constructor
-        .make_new = derp_myLEDs_make_new,
-        // add the global members
-        .locals_dict = (mp_obj_dict_t*)&derp_myLEDs_locals_dict,
-    };
     
 We are now able to define the methods of the class,
 
@@ -184,3 +163,55 @@ We are now able to define the methods of the class,
         // print the number
         printf("LED number: (%u)", self->led_number);
     }
+    
+We now must create the table of global members for our class, we will add to this once we
+begin adding methods to our class. For now, we leave it empty.
+
+    // create the table of global members for the class
+    STATIC const mp_rom_map_elem_t derp_myLEDs_locals_dict_table[] = { };
+    STATIC MP_DEFINE_CONST_DICT(derp_myLEDs_locals_dict, derp_myLEDs_locals_dict_table);
+    
+We now create the class-object type. Our class needs methods, we will add a print method
+(similar to `__repr__` in Python), and a constructor, called print and make_new, respectively.
+These methods are "inherited" from the mp\_obj\_type\_t, and thus we do not add them to 
+the local dict table we just created.
+
+    // create the class-object type
+    const mp_obj_type_t derp_myLEDs_type = {
+        // inherit the type "type"
+        { &mp_type_type },
+        // give the type a name
+        .name = MP_QSTR_myLEDsObj,
+        // give the type a print function
+        .print = derp_myLEDs_print,
+        // give the type a constructor
+        .make_new = derp_myLEDs_make_new,
+        // add the global members
+        .locals_dict = (mp_obj_dict_t*)&derp_myLEDs_locals_dict,
+    };
+
+Adding a Method to Our Class
+----------------------------
+Adding a method only requires us to do a few things, in this example we will create a
+method that does nothing, and returns the `None` object. It isn't very interesting, but it
+will demonstrate what is required to add a method to our new class.
+
+Add the following code immediately below your last class method, so in this example, it
+would be below the `derp_myLEDs_print` method.
+
+    STATIC mp_obj_t derp_myLEDs_blink(mp_obj_t self_in){
+        return mp_const_none;
+    }
+    MP_DEFINE_CONST_FUN_OBJ_1(derp_myLEDs_blink_obj, derp_myLEDs_blink);
+    
+Notice how these methods always pass in a `mp_obj_t` type we call `self_in`. If you're
+familiar with the intricacies of Python, you'll know that every method passes in an instance
+of that class, this is what `self_in` is. This allows us to access the objects fields, or
+in this case, the struct's fields. This method returns `None`, which in the C code is
+`mp_const_none`, which is of type `mp_obj_t`.
+
+We now need to add this method to the locals dict.
+
+    STATIC const mp_rom_map_elem_t derp_myLEDs_locals_dict_table[] = {
+        { MP_ROM_QSTR(MP_QSTR_blink), MP_ROM_PTR(&derp_myLEDs_blink_obj) },
+    };
