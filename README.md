@@ -190,6 +190,17 @@ the local dict table we just created.
         .locals_dict = (mp_obj_dict_t*)&derp_myLEDs_locals_dict,
     };
 
+Now we need to add our object to the module, by adding it into the global member dictionary
+of our module:
+
+```    
+STATIC const mp_map_elem_t derp_globals_table[] = {
+    { MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_derp) },
+    { MP_ROM_QSTR(MP_QSTR_printy), (mp_obj_t)&derp_printy_obj },
+    { MP_OBJ_NEW_QSTR(MP_QSTR_myLEDs), (mp_obj_t)&derp_myLEDs_type },
+};
+```
+
 Adding a Method to Our Class
 ----------------------------
 Adding a method only requires us to do a few things, in this example we will create a

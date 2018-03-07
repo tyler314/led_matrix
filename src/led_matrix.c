@@ -107,6 +107,7 @@ const mp_obj_type_t led_matrix_LEDMatrix_type = {
 
 STATIC const mp_map_elem_t led_matrix_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_led_matrix) },
+    { MP_ROM_QSTR(MP_QSTR_LEDMatrix), (mp_obj_t)&led_matrix_LEDMatrix_type },
 };
 
 STATIC MP_DEFINE_CONST_DICT (
