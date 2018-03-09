@@ -55,7 +55,7 @@ SRC_C = \
         
 Next, create the file `derp.c` within the `ports/stm32` folder, and add the following code
 
-```
+```c
 #include "py/nlr.h"
 #include "py/obj.h"
 #include "py/runtime.h"
@@ -85,7 +85,7 @@ our module in it.
 Now, for this module to be available for import, we need to add it to
 mpconfigport.h file to MICROPY\_PORT\_BUILTIN\_MODULES:
 
-```
+```c
 extern const struct _mp_obj_module_t mp_module_derp;
 
 #define MICROPY_PORT_BUILTIN_MODULES \
@@ -98,7 +98,7 @@ Adding a Function
 -----------------
 To add a simple function, add the following code immediately after the includes,
 
-```
+```c
 #include <stdio.h>
 
 STATIC mp_obj_t derp_printy(void) {
@@ -113,7 +113,7 @@ called, executes the C function `derp_printy`. Our function must return somethin
 this case it returns `None`. To add the function to our module, add this second line of
 code within the `derp_globals_table` you already defined:
 
-```
+```c
 STATIC const mp_map_elem_t derp_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_derp) },
     { MP_ROM_QSTR(MP_QSTR_printy), (mp_obj_t)&derp_printy_obj },
@@ -132,7 +132,7 @@ the class constructor takes in one integer, and sets it to the class's only fiel
 To follow along, add the following code in order, beginning immediately after the last
 `#include` in your c file.
 
-```
+```c
 // Define variable and function prototypes
 const mp_obj_type_t derp_myLEDs_type;
 mp_obj_t derp_myLEDs_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *args);
@@ -142,7 +142,7 @@ STATIC void derp_myLEDs_print(const mp_print_t *print, mp_obj_t self_in, mp_prin
 We must create the C-structure of our new object; it will contain some basic information
 about the class, as well as fields of the class. Add the following code next.
 
-```
+```c
 // this is the actual C-structure for the object "myLEDs"
 typedef struct _derp_myLEDs_obj_t {
     // base represents some basic information, like type
@@ -154,7 +154,7 @@ typedef struct _derp_myLEDs_obj_t {
     
 We are now able to define the methods of the class,
 
-```
+```c
 // Define the constructor, and print function,
 // of the object myLEDs, respectively
 mp_obj_t derp_myLEDs_make_new(const mp_obj_type_t *type,
@@ -187,7 +187,7 @@ STATIC void derp_myLEDs_print(const mp_print_t *print,
 We now must create the table of global members for our class, we will add to this once we
 begin adding methods to our class. For now, we leave it empty.
 
-```
+```c
 // create the table of global members for the class
 STATIC const mp_rom_map_elem_t derp_myLEDs_locals_dict_table[] = { };
 STATIC MP_DEFINE_CONST_DICT(derp_myLEDs_locals_dict, derp_myLEDs_locals_dict_table);
@@ -198,7 +198,7 @@ We now create the class-object type. Our class needs methods, we will add a prin
 These methods are "inherited" from the mp\_obj\_type\_t, and thus we do not add them to 
 the local dict table we just created.
 
-```
+```c
 // create the class-object type
 const mp_obj_type_t derp_myLEDs_type = {
     // inherit the type "type"
@@ -217,7 +217,7 @@ const mp_obj_type_t derp_myLEDs_type = {
 Now we need to add our object to the module, by adding it into the global member dictionary
 of our module:
 
-```    
+```c
 STATIC const mp_map_elem_t derp_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_derp) },
     { MP_ROM_QSTR(MP_QSTR_printy), (mp_obj_t)&derp_printy_obj },
@@ -234,7 +234,7 @@ will demonstrate what is required to add a method to our new class.
 Add the following code immediately below your last class method, so in this example, it
 would be below the `derp_myLEDs_print` method.
 
-```
+```c
 STATIC mp_obj_t derp_myLEDs_blink(mp_obj_t self_in){
     return mp_const_none;
 }
@@ -249,7 +249,7 @@ in this case, the struct's fields. This method returns `None`, which in the C co
 
 We now need to add this method to the locals dict.
 
-```
+```c
 STATIC const mp_rom_map_elem_t derp_myLEDs_locals_dict_table[] = {
     { MP_ROM_QSTR(MP_QSTR_blink), MP_ROM_PTR(&derp_myLEDs_blink_obj) },
 };
