@@ -8,6 +8,7 @@
 // Define variable and function prototypes
 const mp_obj_type_t led_matrix_LEDMatrix_type;
 mp_obj_t led_matrix_LEDMatrix_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *args);
+void configGpioOut(pin_obj_t *pin);
 
 // this is the actual C-structure for the object "LEDMatrix"
 typedef struct _led_matrix_LEDMatrix_obj_t {
@@ -53,16 +54,55 @@ mp_obj_t led_matrix_LEDMatrix_make_new(const mp_obj_type_t *type,
 
 STATIC mp_obj_t led_matrix_LEDMatrix_set_RGB_pins(size_t n_args, const mp_obj_t *args) {
     led_matrix_LEDMatrix_obj_t *self = args[0]; // MP_OBJ_TO_PTR(self_in);
-    // TODO: make new "object", call constructor
-    self->R1 = *((pin_obj_t*) &args[1]);
-    self->R2 = *((pin_obj_t*) &args[2]);
-    self->B1 = *((pin_obj_t*) &args[3]);
-    self->B2 = *((pin_obj_t*) &args[4]);
-    self->G1 = *((pin_obj_t*) &args[5]);
-    self->G2 = *((pin_obj_t*) &args[6]);
+    // R1
+    pin_obj_t *R1 = (pin_obj_t*) &args[1];
+    configGpioOut(R1);
+    self->R1 = *R1;
+    // R2
+    pin_obj_t *R2 = (pin_obj_t*) &args[2];
+    configGpioOut(R2);
+    self->R2 = *R2;
+    // B1
+    pin_obj_t *B1 = (pin_obj_t*) &args[3];
+    configGpioOut(B1);
+    self->B1 = *B1;
+    // B2
+    pin_obj_t *B2 = (pin_obj_t*) &args[4];
+    configGpioOut(B2);
+    self->B2 = *B2;
+    // G1
+    pin_obj_t *G1 = (pin_obj_t*) &args[5];
+    configGpioOut(G1);
+    self->G1 = *G1;
+    // G2
+    pin_obj_t *G2 = (pin_obj_t*) &args[6];
+    configGpioOut(G2);
+    self->G2 = *G2;
     return mp_const_none;
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(led_matrix_LEDMatrix_set_RGB_pins_obj, 7, 7, led_matrix_LEDMatrix_set_RGB_pins);
+
+STATIC mp_obj_t led_matrix_LEDMatrix_r1_on(mp_obj_t self_in){
+    led_matrix_LEDMatrix_obj_t *self = MP_OBJ_TO_PTR(self_in);
+    pin_on(self->R1);
+    return mp_const_none;
+}
+MP_DEFINE_CONST_FUN_OBJ_1(led_matrix_LEDMatrix_r1_on_obj, led_matrix_LEDMatrix_r1_on);
+
+STATIC mp_obj_t led_matrix_LEDMatrix_r1_off(mp_obj_t self_in){
+    led_matrix_LEDMatrix_obj_t *self = MP_OBJ_TO_PTR(self_in);
+    pin_off(self->R1);
+    return mp_const_none;
+}
+MP_DEFINE_CONST_FUN_OBJ_1(led_matrix_LEDMatrix_r1_off_obj, led_matrix_LEDMatrix_r1_off);
+
+void configGpioOut(pin_obj_t *pin){
+    GPIO_InitTypeDef GPIO_InitStructure;
+    GPIO_InitStructure.Pin = pin->pin_mask;
+    GPIO_InitStructure.Mode = GPIO_MODE_OUTPUT_PP;
+    HAL_GPIO_Init(pin->gpio, &GPIO_InitStructure);
+    return void;
+}
 
 STATIC mp_obj_t led_matrix_LEDMatrix_set_row_select_pins(size_t n_args, const mp_obj_t *args){
     led_matrix_LEDMatrix_obj_t *self = args[0];
@@ -90,6 +130,8 @@ STATIC const mp_rom_map_elem_t led_matrix_LEDMatrix_locals_dict_table[] = {
     { MP_ROM_QSTR(MP_QSTR_set_RGB_pins), MP_ROM_PTR(&led_matrix_LEDMatrix_set_RGB_pins_obj) },
     { MP_ROM_QSTR(MP_QSTR_set_row_select_pins), MP_ROM_PTR(&led_matrix_LEDMatrix_set_row_select_pins_obj) },
     { MP_ROM_QSTR(MP_QSTR_set_control_pins), MP_ROM_PTR(&led_matrix_LEDMatrix_set_control_pins_obj) },
+    { MP_ROM_QSTR(MP_QSTR_r1_on), MP_ROM_PTR(&led_matrix_LEDMatrix_r1_on_obj) },
+    { MP_ROM_QSTR(MP_QSTR_r1_off), MP_ROM_PTR(&led_matrix_LEDMatrix_r1_off_obj) },
 };
 STATIC MP_DEFINE_CONST_DICT(led_matrix_LEDMatrix_locals_dict, led_matrix_LEDMatrix_locals_dict_table);
 
