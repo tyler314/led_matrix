@@ -4,6 +4,7 @@
 #include "py/binary.h"
 #include "portmodules.h"
 #include "pin.h"
+#include "py/mphal.h"
 
 // Define variable and function prototypes
 const mp_obj_type_t led_matrix_LEDMatrix_type;
@@ -84,14 +85,14 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(led_matrix_LEDMatrix_set_RGB_pins_obj
 
 STATIC mp_obj_t led_matrix_LEDMatrix_r1_on(mp_obj_t self_in){
     led_matrix_LEDMatrix_obj_t *self = MP_OBJ_TO_PTR(self_in);
-    pin_on(self->R1);
+    mp_hal_pin_high(&(self->R1));
     return mp_const_none;
 }
 MP_DEFINE_CONST_FUN_OBJ_1(led_matrix_LEDMatrix_r1_on_obj, led_matrix_LEDMatrix_r1_on);
 
 STATIC mp_obj_t led_matrix_LEDMatrix_r1_off(mp_obj_t self_in){
     led_matrix_LEDMatrix_obj_t *self = MP_OBJ_TO_PTR(self_in);
-    pin_off(self->R1);
+    mp_hal_pin_low(&(self->R1));
     return mp_const_none;
 }
 MP_DEFINE_CONST_FUN_OBJ_1(led_matrix_LEDMatrix_r1_off_obj, led_matrix_LEDMatrix_r1_off);
@@ -101,7 +102,6 @@ void configGpioOut(pin_obj_t *pin){
     GPIO_InitStructure.Pin = pin->pin_mask;
     GPIO_InitStructure.Mode = GPIO_MODE_OUTPUT_PP;
     HAL_GPIO_Init(pin->gpio, &GPIO_InitStructure);
-    return void;
 }
 
 STATIC mp_obj_t led_matrix_LEDMatrix_set_row_select_pins(size_t n_args, const mp_obj_t *args){
